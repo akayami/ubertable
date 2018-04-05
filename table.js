@@ -1,8 +1,10 @@
+var SortedSet = require("collections/sorted-set");
+
 class Table {
 	constructor(e) {
 		this.element = e;
 		this.body = this.element.querySelector('tbody');
-		this.body['sorting'] = new Set();
+		this.body['sorting'] = new SortedSet();
 		this.observer = new MutationObserver((records, observer) => {
 			this.mutationHandler(records, observer);
 		});
@@ -24,6 +26,8 @@ class Table {
 		for (var x = 0; x < columns.length; x++) {
 			columns[x].addEventListener('click', (e) => {
 
+				console.log(e);
+
 				this.observer.disconnect();
 
 				var sorting = 1;
@@ -37,8 +41,16 @@ class Table {
 				}
 				this.sort(e.target.cellIndex, sorting);
 				e.target.setAttribute('data-sorting', sorting);
-				this.body.setAttribute('data-last-sorting-index', e.target.cellIndex);
-				this.body['sorting'].add(e.target.cellIndex);
+
+				var col = e.target.getAttribute('data-name');
+
+
+				this.body['sorting'].push(e.target.getAttribute('data-name'));
+
+				console.log(this.body['sorting'].toArray());
+
+				// this.body.setAttribute('data-last-sorting-index', e.target.cellIndex);
+				// this.body['sorting'].add(e.target.cellIndex);
 
 				this.observe();
 
@@ -47,6 +59,7 @@ class Table {
 	}
 
 	resort() {
+		console.log(this.body['sorting']);
 		console.log(this.body.getAttribute('data-last-sorting-index'));
 	}
 
